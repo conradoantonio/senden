@@ -1,0 +1,153 @@
+app_users//Este ya :v
+id
+user_type_id
+nombre
+email
+telefono
+domicilio
+	Calle
+	Numero exterior
+	Numero interior
+	Colonia
+	Municipio
+	Estado
+	CP
+
+**auth token (codigo de usuario generado automáticamente en el registro del mismo)
+
+panel_users//ya quedo
+id
+user_type_id
+bussiness_id
+nombre
+email
+password
+photo
+domicilio
+
+
+bussiness//ya quedo
+id
+nombre comercial
+razon social
+rfc
+domicilio fiscal
+domicilio fisico
+
+bussiness_service_dates//ya quedo
+bussiness_id
+service_date_id
+start_service
+end_service
+start_break
+end_break
+
+service_dates//ya quedo
+id
+from
+to
+
+bussiness_holidays//ya quedo
+id
+bussiness_id
+date
+
+order//ya quedo
+id
+app_user_id
+bussiness_id
+status_id
+order_number
+address
+banderazo *($20)
+comission *($2.90)
+shipping_price 
+total
+timestamps
+
+order_details//ya quedó pero aún hay dudas
+id
+order_id
+product_id
+quantity
+price
+*subtotal
+*iva
+*total
+
+status//ya quedo
+id
+name
+
+orders_history//ya quedo
+id
+bussiness_id
+order_id
+start_order
+complete_order
+app_user_id
+sendenboy_id
+address
+
+products//ya quedo
+id
+bussiness_id
+status_id
+name
+description
+photo
+price
+stock
+weight
+lenght
+height
+width
+delivery_method
+is_best_seller
+in_promotion
+sell_at  
+sell_until 
+
+incidences//ya quedo
+id
+incidence_type_id
+order_id
+description
+order_number
+solution_id
+new_order_id
+
+solutions//ya quedo
+id
+name
+
+message//ya quedo
+id
+bussiness_id
+subject
+from
+body
+archived
+
+senden_data
+id
+contact_number
+address
+contact_email
+longitude
+latitude
+privacity_terms_file
+terms_and_conditions_file
+
+faq
+id
+question
+answer
+image
+
+
+
+quieren tener horarios de atencion
+fechas de servicio
+posibilidad de cerrar ciertos horarios
+posibilidad de cerrar dias especificos
