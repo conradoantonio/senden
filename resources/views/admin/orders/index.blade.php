@@ -731,7 +731,6 @@
                 "_token":token
             },
             success:function(data) {
-                //console.log(data);
                 $("table#orders-table tbody").children().remove();             
                 var oTable = $('#orders-table').dataTable();
                 oTable.fnClearTable();
@@ -749,10 +748,11 @@
                          var buttons_table = " <button type='button' class='btn btn-sm btn-info details_test' order_id="+e.order_id+"> "+
                                                     "<i class='fa fa-spinner fa-spin' style='display: none'></i>"+
                                                     "Ver"+
-                                                "</button> "+
-                                                "<button type='button' class='btn btn-sm btn-danger cancelar_pedido' order_id="+e.order_id+">Cancelar</button>";
+                                                "</button>";
 
-                        if (privilege == 3) {
+                                                
+
+                        if (privilege == 3 || privilege == 4) {//Admin de negocio o vendedor
                             oTable.dataTable().fnAddData( 
                                 [
                                     e.order_id,
@@ -766,7 +766,8 @@
 
                         }
 
-                        else if (privilege == 1) {
+                        else if (privilege == 1) {//Administrador
+                            buttons_table = buttons_table+" <button type='button' class='btn btn-sm btn-danger cancelar_pedido' order_id="+e.order_id+">Cancelar</button>";
                             oTable.dataTable().fnAddData( 
                                 [
                                     e.order_id,
