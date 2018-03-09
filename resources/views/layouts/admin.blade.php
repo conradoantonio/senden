@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css')}}"  type="text/css" media="screen"/>
     <link rel="stylesheet" href="{{ asset('css/bootstrap-theme.min.css')}}"  type="text/css" media="screen"/>
     {{-- <link rel="stylesheet" href="{{ asset('css/font-awesome.css')}}"  type="text/css" media="screen"/> --}}
+    <link rel="stylesheet" href="{{ asset('js/plugins/bootstrap-select2/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/animate.min.css')}}"  type="text/css" media="screen"/>
     <link rel="stylesheet" href="{{ asset('css/style.css')}}"  type="text/css" media="screen"/>
     <link rel="stylesheet" href="{{ asset('js/plugins/boostrap-clockpicker/bootstrap-clockpicker.min.css')}}"  type="text/css" media="screen"/>
@@ -260,6 +261,13 @@
 			@endif
 
 			@if(auth()->user()->isSendenAdmin())
+				<li class="{{(isset($menu) ? ($menu == 'Notificaciones App' ? 'active' : '') : '')}}">
+					<a href="{{url('admin/notificaciones_app')}}">
+						<i class="fa fa-bell" aria-hidden="true"></i>
+						<span class="title">Notificaciones App</span>
+					</a>
+				</li>
+
 				<li class="{{(isset($menu) ? ($menu == 'Pagos' ? 'open start' : '') : '')}}">
 	                <a href="javascript:;">
 						<i class="fa fa-money" aria-hidden="true"></i>
@@ -432,6 +440,7 @@
 	<script src="{{ asset('js/bootstrap-switch.js') }}"></script>
 	<script src="{{ asset('js/datatables.js') }}"></script>
 	<script src="{{ asset('js/plugins/lightbox/lightbox.min.js')}}"></script>
+    <script src="{{ asset('js/plugins/bootstrap-select2/select2.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/chart.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js') }}" type='text/javascript'></script>
 

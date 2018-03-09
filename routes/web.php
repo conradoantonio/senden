@@ -130,6 +130,13 @@ $router->group(['prefix' => 'admin', 'middleware' => 'auth'], function ($router)
 		$router->post('pagar/sendenboys/filter', 'PagosController@filter_sendenboy_order');
 		$router->post('pagar/sendenboys/mark_as_paid', 'PagosController@mark_as_paid_sendenboy_orders');
 		$router->post('pagar/sendenboys/source', 'PagosController@source_orders_sendenboy');
+
+		// Notifications
+		$router->group(['prefix' => 'notificaciones_app'], function ($router) {
+			$router->get('/', 'NotificationsController@index');
+			$router->post('/enviar/general', 'NotificationsController@enviar_notificacion_general');
+			$router->post('/enviar/individual', 'NotificationsController@enviar_notificacion_individual');
+		});
 	});
 
 	// Business Admin

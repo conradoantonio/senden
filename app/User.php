@@ -30,6 +30,15 @@ class User extends Authenticatable
     ];
 
     /**
+     * The user's tokens.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tokens() {
+        return $this->hasMany(TokenUser::class);
+    }
+
+    /**
      * The user's business.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
