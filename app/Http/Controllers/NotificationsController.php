@@ -20,8 +20,8 @@ class NotificationsController  extends Controller
         $this->app_sendenboy_id = "9fb67f38-3604-4550-b299-39a353effc25";
         $this->app_sendenshop_key = "Mjk0MjAwYmYtNmQyNC00MzNkLWIzMjItZjFjNTBiZjY1MTNi";
         $this->app_sendenboy_key = "YjllYzIxNmUtNTZhZS00MGEwLWE0ZjktNjc3YjMxMzY3MDRh";
-        $this->app_sendenshop_icon = asset('img/icons_notifications/sendenshop200x200.png');
-        $this->app_sendenboy_icon = asset('img/icons_notifications/sendenboy200x200.png');
+        $this->app_sendenshop_icon = asset('img/icon_notifications/sendenshop200x200.png');
+        $this->app_sendenboy_icon = asset('img/icon_notifications/sendenboy200x200.png');
     }
     /**
      * Display a listing of the resource.

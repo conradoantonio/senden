@@ -14,19 +14,18 @@ require_once("conekta/lib/Conekta.php");
 
 class appController extends Controller 
 { 
-
-     public function __construct() 
-       { 
-          \Conekta\Conekta::setApiKey("key_WmBmjHZY4pQASbyzr3j7sg"); 
-          \Conekta\Conekta::setApiVersion("2.0.0"); 
+    public function __construct() 
+        {
+            \Conekta\Conekta::setApiKey("key_WmBmjHZY4pQASbyzr3j7sg"); 
+            \Conekta\Conekta::setApiVersion("2.0.0"); 
+            $this->summer = date('I');
+            $this->app_sendenshop_id = "0dfee29c-adf1-404b-b736-d3779d53b1de";
+            $this->app_sendenboy_id = "9fb67f38-3604-4550-b299-39a353effc25";
+            $this->app_sendenshop_key = "Mjk0MjAwYmYtNmQyNC00MzNkLWIzMjItZjFjNTBiZjY1MTNi";
+            $this->app_sendenboy_key = "YjllYzIxNmUtNTZhZS00MGEwLWE0ZjktNjc3YjMxMzY3MDRh";
+            $this->app_sendenshop_icon = url('img/icon_notifications/sendenshop200x200.png');
+            $this->app_sendenboy_icon = url('img/icon_notifications/sendenboy200x200.png');
        }  
-     
-
-     
-
-
-
-
     /** 
      * Da de alta el registro de un usuario tipo cliente. 
      * 
@@ -1805,24 +1804,50 @@ class appController extends Controller
     private function sendNotificationNewOrder()
     {
         $array_tokens = array();
-        $token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1NGY1ZWNhZi0zM2RkLTQwNDMtOGJiYy00ODcxNGU4YTc1N2IifQ.7Z-jomTuRA9YH4Su4MbWx_sWXHHa62hg1sRdh3z1kPg";
-        $rows = DB::table('token_user')->get();
-        foreach ($rows as $row) { array_push($array_tokens, $row->token); }
+        $sendenboys = DB::table('users')->where('user_type_id', 2)->get();
+        foreach ($sendenboys as $sendenboy) {
+            $tokens = DB::table('token_user')->where('user_id', $sendenboy->id)->get();
+            foreach ($tokens as $tok) {
+                array_push($array_tokens, $tok->token); 
+            }
+        }
 
-        $data = array('tokens' => $array_tokens, 'profile' => "prod", 'notification' => array('message' => '¡Hay un nuevo pedido esperando!', 'title' => 'Pedido cerca', 'ios' => array ('sound' => 'default')));
+        $mensaje = '¡Hay un nuevo pedido esperando!';
+        $titulo = 'Pedido cerca';
+        $app_id = $this->app_sendenboy_id;
+        $app_key = $this->app_sendenboy_key;
+        $icon = $this->app_sendenboy_icon;
+        $content = array(
+            "en" => $mensaje
+        );
 
+        $header = array(
+            "en" => $titulo
+        );
+        
+        $fields = array(
+            'app_id' => $app_id,
+            'include_player_ids' => $array_tokens,
+            'data' => array("type" => "general"),
+            'headings' => $header,
+            'contents' => $content,
+            'large_icon' => $icon
+        );
+        
+        $fields = json_encode($fields);
+        
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.ionic.io/push/notifications');
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Authorization: Bearer $token",
-            "Content-Type: application/json"
-        ));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        $output = curl_exec($ch);
+        curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
+                                                   "Authorization: Basic $app_key"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
-        //return json_encode($output);
+        $response = curl_exec($ch);
+        curl_close($ch);
     }
 
     /** 
@@ -1831,7 +1856,6 @@ class appController extends Controller
      */
     private function sendNotificationStartOrder($orderId)
     {
-        $api_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhMzZmMGU5ZS1jMTgzLTRkOTgtYjBjZi0zM2ZlOTM2YWUzMDUifQ.olFcPZkZZsk1YxyMdAAWGpszUsALUpA0uadgXxTJD50";
         $array_tokens = array();
         $usuario = DB::table('order_has_user')
         ->select(DB::raw('order_has_user.*'))
@@ -1842,23 +1866,46 @@ class appController extends Controller
         $tokens_usuario = DB::table('token_user')->where('user_id', $usuario->user_id)->get();
         foreach ($tokens_usuario as $token) { array_push($array_tokens, $token->token); }
 
-        $data = array('tokens' => $array_tokens, 'profile' => "prod", 'notification' => array('message' => '¡Tu pedido ha sido recogido y ya está en camino!', 'title' => 'Pedido tomado', 'ios' => array ('sound' => 'default', 'badge' => 1)));
+        $mensaje = '¡Tu pedido ha sido recogido y ya está en camino!';
+        $titulo = 'Pedido tomado';
+        $app_id = $this->app_sendenshop_id;
+        $app_key = $this->app_sendenshop_key;
+        $icon = $this->app_sendenshop_icon;
+        $content = array(
+            "en" => $mensaje
+        );
 
+        $header = array(
+            "en" => $titulo
+        );
+        
+        $fields = array(
+            'app_id' => $app_id,
+            'include_player_ids' => $array_tokens,
+            'data' => array("type" => "individual", "profile" => "prod"),
+            'headings' => $header,
+            'contents' => $content,
+            'large_icon' => $icon
+        );
+        
+        $fields = json_encode($fields);
+        
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.ionic.io/push/notifications');
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Authorization: Bearer $api_token",
-            "Content-Type: application/json"
-        ));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        $output = curl_exec($ch);
+        curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
+                                                   "Authorization: Basic $app_key"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
-        foreach ($tokens_usuario as $row) { //Guarda las notificaciones de los usuarios
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        foreach ($tokens_usuario as $row) { //Guarda la notificación del usuario
             $this->saveNotification($row->user_id, $row->platform, '¡Tu pedido ha sido recogido y ya está en camino!');
         }
-        //return json_encode($output);
     }
 
     /** 
@@ -1867,7 +1914,6 @@ class appController extends Controller
      */
     public function sendNotificationOrderArriving(Request $request)
     {
-        $api_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhMzZmMGU5ZS1jMTgzLTRkOTgtYjBjZi0zM2ZlOTM2YWUzMDUifQ.olFcPZkZZsk1YxyMdAAWGpszUsALUpA0uadgXxTJD50";
         $array_tokens = array();
         $usuario = DB::table('order_has_user')
         ->select(DB::raw('order_has_user.*'))
@@ -1881,21 +1927,45 @@ class appController extends Controller
         $tokens_usuario = DB::table('token_user')->where('user_id', $usuario->user_id)->get();
         foreach ($tokens_usuario as $token) { array_push($array_tokens, $token->token); }
 
-        $data = array('tokens' => $array_tokens, 'profile' => "prod", 'notification' => array('message' => '¡Tu pedido ya está cerca de ti!', 'title' => 'Pedido llegando', 'ios' => array ('sound' => 'default', 'badge' => 1)));
+        $mensaje = '¡Tu pedido ya está cerca de ti!';
+        $titulo = 'Pedido llegando';
+        $app_id = $this->app_sendenshop_id;
+        $app_key = $this->app_sendenshop_key;
+        $icon = $this->app_sendenshop_icon;
+        $content = array(
+            "en" => $mensaje
+        );
 
+        $header = array(
+            "en" => $titulo
+        );
+        
+        $fields = array(
+            'app_id' => $app_id,
+            'include_player_ids' => $array_tokens,
+            'data' => array("type" => "individual", "profile" => "prod"),
+            'headings' => $header,
+            'contents' => $content,
+            'large_icon' => $icon
+        );
+        
+        $fields = json_encode($fields);
+        
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.ionic.io/push/notifications');
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            "Authorization: Bearer $api_token",
-            "Content-Type: application/json"
-        ));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        $output = curl_exec($ch);
+        curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
+                                                   "Authorization: Basic $app_key"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
-        foreach ($tokens_usuario as $row) { //Guarda las notificaciones de los usuarios
-            $this->saveNotification($row->user_id, $row->platform, '¡Tu pedido ya está cerca de ti!');
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        foreach ($tokens_usuario as $row) { //Guarda la notificación del usuario
+            $this->saveNotification($row->user_id, $row->platform, '¡Tu pedido ha sido recogido y ya está en camino!');
         }
         return 1;
     }
