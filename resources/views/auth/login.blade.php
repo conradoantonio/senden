@@ -11,9 +11,15 @@
         <link rel="stylesheet" href="{{ asset('js/plugins/pace/pace-theme-flash.css')}}"  type="text/css" media="screen"/>
         <link rel="stylesheet" href="{{ asset('js/plugins/boostrapv3/css/bootstrap.min.css')}}"  type="text/css"/>
         <link rel="stylesheet" href="{{ asset('css/style.css')}}" type="text/css"/>
-
+        <style type="text/css">
+            .body-login {
+                background: url('{{asset('img/img_login.jpg')}}');
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+            }
+        </style>
     </head>
-    <body>
+    <body class="body-login">
         <div class="container centered">
             <div class="col-lg-12 text-center">
                 <div class="row tiles-container m-b-10">
@@ -54,8 +60,7 @@
         </div>
         
         <script src="{{ asset('js/plugins/jquery-1.8.3.min.js') }}" type="text/javascript"></script> 
-        <script src="{{ asset('js/sweetalert.min.js') }}"></script>
-        <script src="{{ asset('plugins/boostrapv3/js/bootstrap.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('js/plugins/boostrapv3/js/bootstrap.min.js') }}" type="text/javascript"></script> 
         <script src="{{ asset('js/plugins/pace/pace.min.js') }}" type="text/javascript"></script>
     </body>
 </html>
