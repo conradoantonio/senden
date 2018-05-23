@@ -111,21 +111,6 @@
 		}); 
 	})
 
-	function refreshTable(url, column, table_id, container_id) {
-        $('.delete-rows').attr('disabled', true);
-        var table = table_id ? $("table#"+table_id).dataTable() : $("table#example3").dataTable();
-        var container = container_id ? $("div#"+container_id) : $('div#table-container');
-        table.fnDestroy();
-        container.fadeOut();
-        container.empty();
-        container.load(url, function() {
-            container.fadeIn();
-            $(table_id ? "table#"+table_id : "table#example3").dataTable({
-                "aaSorting": [[ column ? column : 1, "desc" ]]
-            });
-        });
-    }
-
 	function refreshTable(){
 		var table = $("#table").dataTable();
         var container = $('div.table_container');
