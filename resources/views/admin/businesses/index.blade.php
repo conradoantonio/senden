@@ -62,6 +62,8 @@
 
 		$(document).delegate('.delete','click',function(){
 			var id = $(this).parent().parent().data('id')
+			var ids_array = [id];
+
 			swal({
 				title: "¿Realmente quieres eliminar este negocio?",
 				type: "warning",
@@ -73,8 +75,11 @@
 			},function(isConfirm){
 				if (isConfirm) {
 					$.ajax({
-						url:"{{URL::to('/admin/businesses')}}/"+id,
-						type:'DELETE',
+						url:"{{URL::to('/admin/businesses/delete-multiple')}}",
+						type:'POST',
+						data:{
+							ids:ids_array,
+						},
 						success:function(response){
 							if (response) {
 								refreshTable();
@@ -106,11 +111,33 @@
 		}); 
 	})
 
+	function refreshTable(url, column, table_id, container_id) {
+        $('.delete-rows').attr('disabled', true);
+        var table = table_id ? $("table#"+table_id).dataTable() : $("table#example3").dataTable();
+        var container = container_id ? $("div#"+container_id) : $('div#table-container');
+        table.fnDestroy();
+        container.fadeOut();
+        container.empty();
+        container.load(url, function() {
+            container.fadeIn();
+            $(table_id ? "table#"+table_id : "table#example3").dataTable({
+                "aaSorting": [[ column ? column : 1, "desc" ]]
+            });
+        });
+    }
+
 	function refreshTable(){
-		$('#table').fadeOut();
-		$('#table').load("{{ URL::to('/admin/businesses') }}", function() {
-			$('#table').fadeIn();
-		});
+		var table = $("#table").dataTable();
+        var container = $('div.table_container');
+
+        table.fnDestroy();
+        container.fadeOut();
+        container.empty();
+
+        container.load("{{ URL::to('/admin/businesses') }}", function() {
+            container.fadeIn();
+            $('#table').dataTable();
+        });
 	}
 </script>
 @endpush
@@ -139,7 +166,7 @@
 							<div class="grid-body ">
 								<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
 									<div class="row"> 
-										<div class="col-sm-12">
+										<div class="col-sm-12 table_container">
 											@include('admin.businesses.table')
 										</div>
 									</div>
