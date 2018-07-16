@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6e-eCv9TpL7WdvCuNh0wbSUSR3m61WFo&libraries=places"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSoqC5Ns8sZkKPDKKC9rwJdzdpUDjOGOg&libraries=places"></script>
 @push('scripts')
 	<script src="{{ asset('js/validForm.js') }}" type="text/javascript"></script> 
 	<script>
